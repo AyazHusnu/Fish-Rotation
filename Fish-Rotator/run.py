@@ -117,9 +117,8 @@ def calculate_angle(X, Y, Head_X, Head_Y, Tail_X, Tail_Y):
     x0, y0 = Head_Point
 
     # Calculate the coordinates of the tail (label 1)
-    Tail_Point = [X * Tail_X, abs((Y * Tail_Y - Y))]
+    Tail_Point = [X * Tail_X, abs((Y * Tail_Y) - Y)]
     x1, y1 = Tail_Point
-
 
     # Calculate the angle in radians
     a = abs(x1 - x0)
@@ -141,13 +140,13 @@ def read_labels(txt_path):
                 Y1 = (float(s[2]))
     return X0,Y0,X1,Y1
 
-images_directory_path = "C:/Users/Ayaz/Desktop/Python-pdf/mirror_and_rotate/images"
+images_directory_path = "C:/Users/Ayaz/Desktop/Fish-Rotator/images"
 image_names = os.listdir(images_directory_path)
 
-labels_directory_path = "C:/Users/Ayaz/Desktop/Python-pdf/mirror_and_rotate/labels"
+labels_directory_path = "C:/Users/Ayaz/Desktop/Fish-Rotator/labels"
 label_names = os.listdir(labels_directory_path)
 
-output_folder_path = "C:/Users/Ayaz/Desktop/Python-pdf/mirror_and_rotate/output"
+output_folder_path = "C:/Users/Ayaz/Desktop/Fish-Rotator/output"
 images_and_labels = tuple(zip(image_names, label_names))
 
 for image_name in image_names:
@@ -161,8 +160,8 @@ for image_name in image_names:
     image = read_image(image_path)
     X0, Y0, X1, Y1 = read_labels(label_path)
 
-    height, width, _ = image.shape
-
+    width,height, _ = image.shape
+    print(height,width,image_name)
     radian = calculate_angle(height, width, X0, Y0, X1, Y1)
     angle = radian_to_degree(radian)
 
@@ -173,13 +172,13 @@ for image_name in image_names:
         print("Region 1: Rotating")
         rotated_image = rotate_image(angle, image)
         image = rotated_image
-    elif X0 - X1 < 0 and Y0 - Y1 < 0:
+    elif X0 - X1 <= 0 and Y0 - Y1 <= 0:
         angle = angle
         print("Region 2: Rotating and Mirroring")
         rotated_image = rotate_image(angle, image)
         mirrored_image = mirror(rotated_image)
         image = mirrored_image
-    elif X0 - X1 < 0 and Y0 - Y1 > 0:
+    elif X0 - X1 <= 0 and Y0 - Y1 >= 0:
         angle = -angle
         print("Region 3: Rotating and Mirroring")
         rotated_image = rotate_image(angle, image)
@@ -193,3 +192,7 @@ for image_name in image_names:
 
     output_image_path = os.path.join(output_folder_path, image_name)
     cv2.imwrite(output_image_path, image)
+
+
+
+
